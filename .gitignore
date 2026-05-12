@@ -1,0 +1,7 @@
+.env
+Real-Time Speech Emotion Recognizer/datasets
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
