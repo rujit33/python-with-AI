@@ -1,3 +1,5 @@
+'''Feature extraction module for speech emotion recognition.'''
+
 import librosa
 import numpy as np
 import os
@@ -7,6 +9,27 @@ from config import (
     N_MFCC
 )
 
+
+# =========================
+# AUGMENTATION HELPERS
+# =========================
+
+def augment_noise(signal, noise_factor=0.005):
+    noise = np.random.randn(len(signal))
+    return signal + noise_factor * noise
+
+
+def augment_time_stretch(signal, rate=0.9):
+    return librosa.effects.time_stretch(signal, rate=rate)
+
+
+def augment_pitch_shift(signal, sample_rate, steps=2):
+    return librosa.effects.pitch_shift(signal, sr=sample_rate, n_steps=steps)
+
+
+# =========================
+# VALIDATION & PREPROCESSING
+# =========================
 
 def validate_audio_file(file_path):
 
@@ -33,28 +56,22 @@ def reduce_noise(audio):
     return audio
 
 
-def extract_features(file_path):
+# =========================
+# CORE FEATURE EXTRACTION
+# =========================
 
+def _extract_features_from_signal(signal, sample_rate):
+    """
+    Extracts features directly from a pre-loaded signal array.
+    Used for augmented samples so we don't re-read from disk.
+    """
     try:
-        validate_audio_file(file_path)
-
-        signal, sample_rate = librosa.load(
-            file_path,
-            sr=None
-        )
-
         if len(signal) == 0:
-            raise ValueError(
-                "Audio file is empty."
-            )
-
-        signal = reduce_noise(signal)
+            return None
 
         result = np.array([])
 
-        stft = np.abs(
-            librosa.stft(signal)
-        )
+        stft = np.abs(librosa.stft(signal))
 
         # MFCC Features
         mfccs = np.mean(
@@ -115,7 +132,7 @@ def extract_features(file_path):
         )
         result = np.hstack((result, spectral_contrast))
 
-        # Tonnetz — called directly on signal, no harmonic separation
+        # Tonnetz
         tonnetz = np.mean(
             librosa.feature.tonnetz(
                 y=signal,
@@ -128,9 +145,29 @@ def extract_features(file_path):
         return result
 
     except Exception as error:
+        print(f"\n[ERROR] Augmented feature extraction failed: {error}")
+        return None
 
-        print(
-            f"\n[ERROR] Feature extraction failed for {file_path}: {error}"
+
+def extract_features(file_path):
+    """
+    Loads audio from disk, validates it, then extracts features.
+    """
+    try:
+        validate_audio_file(file_path)
+
+        signal, sample_rate = librosa.load(
+            file_path,
+            sr=None
         )
 
+        if len(signal) == 0:
+            raise ValueError("Audio file is empty.")
+
+        signal = reduce_noise(signal)
+
+        return _extract_features_from_signal(signal, sample_rate)
+
+    except Exception as error:
+        print(f"\n[ERROR] Feature extraction failed for {file_path}: {error}")
         return None

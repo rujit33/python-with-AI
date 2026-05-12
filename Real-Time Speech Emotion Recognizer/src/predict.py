@@ -1,12 +1,24 @@
+"""
+Inference script for real-time speech emotion recognition."""
+
 import os
 import pickle
 import numpy as np
 from feature_extraction import extract_features
 from config import MODEL_PATH, SCALER_PATH, EMOTIONS
+from utils import convert_to_wav
 
 def predict_emotion(audio_path):
 
     try:
+
+        # Convert to wav if not already
+        if not audio_path.lower().endswith(".wav"):
+            print(f"[INFO] Converting {os.path.basename(audio_path)} to WAV...")
+            audio_path = convert_to_wav(audio_path)
+            if audio_path is None:
+                print("[ERROR] Conversion to WAV failed.")
+                return None
 
         with open(MODEL_PATH, "rb") as model_file:
             model = pickle.load(model_file)
@@ -31,14 +43,8 @@ def predict_emotion(audio_path):
         # Apply same scaler used during training
         features = scaler.transform(features)
 
-        
-        # prediction = model.predict(features)
-        # predicted_emotion = prediction[0]
-        # print(f"Predicted : {predicted_emotion}")
-        # return predicted_emotion
-
         #! Get probabilities for all emotions
-        probabilities = model.predict_proba(features)[0]    
+        probabilities = model.predict_proba(features)[0]
 
         #! Get index of highest probability
         predicted_index = np.argmax(probabilities)
@@ -51,9 +57,8 @@ def predict_emotion(audio_path):
         #! Print all emotion probabilities
         print("\nAll Emotion Probabilities:")
         for emotion, probability in zip(model.classes_, probabilities):
-            print(f"{emotion}: {probability * 100:.2f}%")
+            print(f"  {emotion}: {probability * 100:.2f}%")
         return predicted_emotion
-
 
     except FileNotFoundError as error:
         print(f"[ERROR] File not found: {error}")
@@ -64,5 +69,5 @@ def predict_emotion(audio_path):
 
 
 if __name__ == "__main__":
-    test_audio = r"E:\internship\Real-Time Speech Emotion Recognizer\inference data\anger1.wav"  # Replace with your test audio file path
+    test_audio = r"E:\internship\Real-Time Speech Emotion Recognizer\inference data\anger1.wav"
     predict_emotion(test_audio)

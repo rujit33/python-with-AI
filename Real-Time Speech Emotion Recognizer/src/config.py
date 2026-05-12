@@ -20,7 +20,8 @@ N_MFCC = 60
 # =========================
 # MODEL CONFIGURATION
 # =========================
-HIDDEN_LAYER_SIZES = (300, 200, 100)
+HIDDEN_LAYER_SIZES = (512, 256, 128)
+ACTIVATION = "relu"
 LEARNING_RATE = "adaptive"
 BATCH_SIZE = 256
 MAX_ITERATIONS = 1000

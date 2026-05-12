@@ -1,3 +1,7 @@
+"""
+Training script for the speech emotion recognition model.
+"""
+
 import os
 import pickle
 import numpy as np
@@ -9,6 +13,7 @@ from data_loader import load_dataset
 
 from config import (
     HIDDEN_LAYER_SIZES,
+    ACTIVATION,
     LEARNING_RATE,
     BATCH_SIZE,
     MAX_ITERATIONS,
@@ -29,8 +34,6 @@ def train():
 
     print(f"Train samples: {len(x_train)} | Test samples: {len(x_test)}")
 
-    
-
     # Scale features — critical for MLP, do NOT skip this
     scaler = StandardScaler()
     x_train = scaler.fit_transform(x_train)
@@ -40,6 +43,7 @@ def train():
 
     model = MLPClassifier(
         hidden_layer_sizes=HIDDEN_LAYER_SIZES,
+        activation=ACTIVATION,
         learning_rate=LEARNING_RATE,
         batch_size=BATCH_SIZE,
         max_iter=MAX_ITERATIONS,

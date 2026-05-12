@@ -53,7 +53,57 @@ dataset/
 └── ...
 ```
 
----
+The following line of code extracts the True value of file.
+
+```python
+emotion_code = file_name.split("-")[2]
+```
+
+for example for the following audio file in training dataset
+
+```
+03-01-05-01-02-01-12.wav
+```
+
+Python creates a list:
+
+```python
+[
+    "03",
+    "01",
+    "05",
+    "01",
+    "02",
+    "01",
+    "12.wav"
+]
+```
+
+Now indexing starts from 0.
+
+```
+Index	Value
+0	"03"
+1	"01"
+2	"05"
+3	"01"
+4	"02"
+5	"01"
+6	"12.wav"
+
+```
+
+So:
+
+```python
+file_name.split("-")[2]
+```
+
+means:
+
+```python
+"05"
+```
 
 # 📥 Dataset Source
 
@@ -135,6 +185,13 @@ cd "Real-Time Speech Emotion Recognizer"
 python src/train_model.py
 ```
 
+## 💾 Model Output
+
+After training:
+
+Trained model is saved as:
+models/emotion_model.pkl
+
 ## Step 3: Run inference
 
 in the predict.py file replace the file path with the file you wish to predict
@@ -169,13 +226,6 @@ sad: 0.00%
 👉 .wav only
 
 (MP3 support requires additional preprocessing libraries and is not enabled by default.)
-
-## 💾 Model Output
-
-After training:
-
-Trained model is saved as:
-models/emotion_model.pkl
 
 # 🧠 Model Overview
 
@@ -254,3 +304,81 @@ The model is trained using:
 - Loss minimization (log-loss function)
 
 ---
+
+## Results
+
+```powershell
+(.env) PS E:\internship\Real-Time Speech Emotion Recognizer> python src/train_model.py
+Loading dataset...
+Found 1440 audio files. Starting feature extraction...
+
+[1440/1440] Processed: 4032 | Skipped: 767
+
+Done. 4032 files loaded, 768 skipped.
+Train samples: 3225 | Test samples: 807
+
+Training model...
+Iteration 1, loss = 1.11221759
+Iteration 2, loss = 0.70951072
+Iteration 3, loss = 0.48274498
+Iteration 4, loss = 0.33966359
+Iteration 5, loss = 0.22445688
+Iteration 6, loss = 0.16004759
+Iteration 7, loss = 0.11518596
+Iteration 8, loss = 0.07048944
+Iteration 9, loss = 0.04887767
+Iteration 10, loss = 0.03653616
+Iteration 11, loss = 0.02267206
+Iteration 12, loss = 0.01477620
+Iteration 13, loss = 0.01062252
+Iteration 14, loss = 0.00818739
+Iteration 15, loss = 0.00646214
+Iteration 16, loss = 0.00547121
+Iteration 17, loss = 0.00473377
+Iteration 18, loss = 0.00423886
+Iteration 19, loss = 0.00384319
+Iteration 20, loss = 0.00360729
+Iteration 21, loss = 0.00341168
+Iteration 22, loss = 0.00323025
+Iteration 23, loss = 0.00310701
+Iteration 24, loss = 0.00301564
+Iteration 25, loss = 0.00287930
+Iteration 26, loss = 0.00279959
+Iteration 27, loss = 0.00271712
+Iteration 28, loss = 0.00265892
+Iteration 29, loss = 0.00260596
+Iteration 30, loss = 0.00255344
+Iteration 31, loss = 0.00249798
+Iteration 32, loss = 0.00245921
+Iteration 33, loss = 0.00242447
+Iteration 34, loss = 0.00239036
+Iteration 35, loss = 0.00236840
+Iteration 36, loss = 0.00233547
+Training loss did not improve more than tol=0.000100 for 10 consecutive epochs. Stopping.
+
+Accuracy: 88.60%
+
+Classification Report:
+              precision    recall  f1-score   support
+
+       angry       0.92      0.91      0.91       230
+       happy       0.89      0.91      0.90       231
+     neutral       0.81      0.83      0.82       115
+         sad       0.89      0.86      0.87       231
+
+    accuracy                           0.89       807
+   macro avg       0.88      0.88      0.88       807
+weighted avg       0.89      0.89      0.89       807
+
+Model and scaler saved successfully.
+```
+
+## APP.py
+An interface was provided to the ML model using Gradio.
+
+Run the following command inorder start the application.
+
+(working directory should be Real-Time Speech Emotion Recognizer folder  )
+```powershell
+python src/app.py   
+```
