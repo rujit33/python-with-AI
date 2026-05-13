@@ -5,3 +5,5 @@ Real-Time Speech Emotion Recognizer/datasets
 __pycache__/
 *.py[cod]
 *$py.class
+
+Real-Time Speech Emotion Recognizer/temp

@@ -164,6 +164,12 @@ Used for inference:
 
 ---
 
+## utils.py
+
+Provides a function to convert audio file formats to .wav format for Compatibility.
+
+---
+
 ## inference data
 
 Contains few sample audio data for testing purpose.
@@ -373,12 +379,16 @@ weighted avg       0.89      0.89      0.89       807
 Model and scaler saved successfully.
 ```
 
-## APP.py
+---
+
+## app.py (Inference Via Gradio)
+
 An interface was provided to the ML model using Gradio.
 
 Run the following command inorder start the application.
 
-(working directory should be Real-Time Speech Emotion Recognizer folder  )
+(working directory should be "Real-Time Speech Emotion Recognizer" folder )
+
 ```powershell
-python src/app.py   
+python src/app.py
 ```
