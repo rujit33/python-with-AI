@@ -4,11 +4,11 @@ import spacy
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from taxonomy import TAXONOMY
 nlp = spacy.load("en_core_web_md")
+from .taxonomy import TAXONOMY
 
 
-
+TAXONOMY= TAXONOMY()
 
 
 # Build a flat lookup: seed_word → category
